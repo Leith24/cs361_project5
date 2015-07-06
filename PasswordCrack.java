@@ -2,18 +2,21 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
 import java.util.Arrays;
+import java.lang.StringBuilder;
 public class PasswordCrack{
 
 
 	public static void main(String args[])throws Exception{
 	
 	
-		//currentTimeMillis()
-		long start = System.currentTimeMillis();			
+		
+		long start = System.currentTimeMillis();		
+
+		/*get user and dictionary data*/
     	ArrayList<String> words = getWords(args[0]);     
 		ArrayList<ArrayList<String>> users = getUsers(args[1]);
-		System.out.println(users);
-	    
+	    System.out.println(toggle("Daniel"));
+
 	    long end = System.currentTimeMillis();
 	    System.out.println("runtime: " + (end - start) + "ms");
 	}
@@ -42,5 +45,76 @@ public class PasswordCrack{
 			words.add(scan.next());	
 		}
 		return words;
+	}
+
+	/*prepend symbol to string*/
+	public static String prepend(String word){
+	
+		for (int i = 0; i < 256; i++){
+			String result = (char)i+word;
+			System.out.print(result + ", ");
+		}
+		return null;
+	}
+    /*append symbol to string*/
+	public static String append(String word){
+	
+		for (int i = 0; i < 256; i++){
+			String result = word+(char)i;
+			System.out.print(result + ", ");
+		}
+		return null;
+		
+	}
+	/*remove first character of string*/
+	public static String remove_First(String word){
+		return word.substring(1);
+	}
+	/*remove last character of string*/
+	public static String remove_Last(String word){
+		return word.substring(0, word.length() - 1);
+	}
+	/*reverse a string*/
+	public static String reverse(String word){
+		return new StringBuilder(word).reverse().toString();
+	}
+
+	/*duplicate a string*/
+	public static String duplicate(String word){
+		return word + word;
+	}
+	/*capitilze a string*/
+	public static String capitalize(String word){
+
+		return word.substring(0,1).toUpperCase() + word.substring(1);
+	}
+
+	public static String ncapitalize(String word){
+		return word.substring(0,1).toLowerCase()+word.substring(1).toUpperCase();
+	}
+
+	public static ArrayList<String> toggle(String word){
+		ArrayList<String> results = new ArrayList<String>();
+		for (int j = 0; j < 2;j++){
+			StringBuilder build = new StringBuilder();
+			
+			for (int i = 0 ; i < word.length(); i++){
+				if (j == 0){
+					if(i % 2 == 0)
+						build.append(word.substring(i,i+1).toUpperCase());
+					else 
+						build.append(word.substring(i,i+1).toLowerCase());
+				}
+				if (j == 1){
+					if(i % 2 == 0)
+						build.append(word.substring(i,i+1).toLowerCase());
+					else 
+						build.append(word.substring(i,i+1).toUpperCase());
+				}
+			}
+			results.add(build.toString());
+
+		}
+		return results;
 	}
 }

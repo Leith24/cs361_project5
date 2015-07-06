@@ -15,7 +15,9 @@ public class PasswordCrack{
 		/*get user and dictionary data*/
     	ArrayList<String> words = getWords(args[0]);     
 		ArrayList<ArrayList<String>> users = getUsers(args[1]);
-	    System.out.println(toggle("Daniel"));
+	    for (int i=0; i < users.size();i++){
+	    	System.out.println(users.get(i));
+	    }
 
 	    long end = System.currentTimeMillis();
 	    System.out.println("runtime: " + (end - start) + "ms");
@@ -49,19 +51,19 @@ public class PasswordCrack{
 
 	/*prepend symbol to string*/
 	public static String prepend(String word){
-	
+		StringBuilder build = new StringBuilder();
 		for (int i = 0; i < 256; i++){
-			String result = (char)i+word;
-			System.out.print(result + ", ");
+			build.append((char)i+word);
+			System.out.print(build.toString() + ", ");
 		}
 		return null;
 	}
     /*append symbol to string*/
 	public static String append(String word){
-	
+	StringBuilder build = new StringBuilder();
 		for (int i = 0; i < 256; i++){
-			String result = word+(char)i;
-			System.out.print(result + ", ");
+			build.append(word+(char)i);
+			System.out.print(build.toString() + ", ");
 		}
 		return null;
 		
@@ -86,13 +88,20 @@ public class PasswordCrack{
 	/*capitilze a string*/
 	public static String capitalize(String word){
 
-		return word.substring(0,1).toUpperCase() + word.substring(1);
+		return word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase();
 	}
-
+	/*inverse of capitalize*/
 	public static String ncapitalize(String word){
 		return word.substring(0,1).toLowerCase()+word.substring(1).toUpperCase();
 	}
-
+	/*create mirror image of string and returns reults in array list*/
+	public static ArrayList<String> reflect(String word){
+		ArrayList<String> results=new ArrayList<String>();
+		results.add(reverse(word)+word);
+		results.add(word+reverse(word));
+		return results;
+	}
+	/*creates two toggles and returns results in arrayList*/
 	public static ArrayList<String> toggle(String word){
 		ArrayList<String> results = new ArrayList<String>();
 		for (int j = 0; j < 2;j++){

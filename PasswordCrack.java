@@ -15,10 +15,10 @@ public class PasswordCrack{
 		/*get user and dictionary data*/
     	ArrayList<String> words = getWords(args[0]);     
 		ArrayList<ArrayList<String>> users = getUsers(args[1]);
-	    for (int i=0; i < users.size();i++){
-	    	System.out.println(users.get(i));
-	    }
 
+		/*need to implement main portion*/
+
+		/*print out runtime*/
 	    long end = System.currentTimeMillis();
 	    System.out.println("runtime: " + (end - start) + "ms");
 	}

@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.Scanner;
 import java.io.File;
 import java.util.Arrays;
@@ -15,19 +15,21 @@ public class PasswordCrack{
 		/*get user and dictionary data*/
     	ArrayList<String> words = getWords(args[0]);     
 		ArrayList<ArrayList<String>> users = getUsers(args[1]);
-		System.out.println("PRINTING MICHAEL: " + users.get(0));
 		jcrypt jj = new jcrypt();
+
+		/*CRACK PASSWORDS*/ 
 		/*iterating through the user list*/
 		for (int i = 0; i < users.size();i++){
 			boolean cracked = false;
 
 			System.out.println("\n"+  users.get(i));	
-			/*take off salt values from front*/
+			/*get password w/o salt*/
 			String encrypted_password = users.get(i).get(1).substring(2); 
-			/*get salt value*/
+			/*get salt*/
 			String salt = users.get(i).get(1).substring(0,2);
-			/*add first name to list*/
+			/*add first name to list of words*/
             words.add(users.get(i).get(0));
+			/*for debugging purposes*/
 			System.out.println("name added: " + words.get(words.size() - 1));
 			System.out.println("attempting to crack: "+encrypted_password +", with salt: " + users.get(i).get(1));
 
@@ -42,7 +44,6 @@ public class PasswordCrack{
 					break;
 				}
 			}	
-			//words.remove(words.size() - 1);
 			results(cracked, word);
 		}
 

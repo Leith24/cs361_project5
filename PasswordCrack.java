@@ -34,7 +34,7 @@ public class PasswordCrack{
             words.add(names[1]);
 
 			/*for debugging purposes*/
-			System.out.println("attempting to crack: "+encrypted_password +", with salt: " + users.get(i).get(1));
+			System.out.println("attempting to crack: "+ users.get(i).get(1));
 
 			/*attempt to crack users password*/
 			number_cracked+=crack(cracked, encrypted_password, salt, words, jj, users);
@@ -142,7 +142,7 @@ public class PasswordCrack{
 		if (cracked)
 			System.out.println("\033[32mfound password\033[0m: "+word);	
 	    else
-			System.out.println("\033[31mdidn't crack password\033[0m");
+			System.out.println("\033[31mFAILED\033[0m");
 			
 	
 	}

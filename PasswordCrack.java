@@ -33,23 +33,31 @@ public class PasswordCrack{
 			System.out.println("name added: " + words.get(words.size() - 1));
 			System.out.println("attempting to crack: "+encrypted_password +", with salt: " + users.get(i).get(1));
 
-			int w_index = 0;
-			String word="";
-			/*iterating through dicationary*/
-		    for (w_index = 0; w_index < words.size();w_index++){
-			    word=words.get(w_index);
-				String encryption=jj.crypt(salt, word);	
-				if (encryption.equals(salt + encrypted_password)){
-			        cracked = true;
-					break;
-				}
-			}	
-			results(cracked, word);
+			/*attempt to crack users password*/
+			crack(cracked, encrypted_password, salt, words, jj);
+			
 		}
 
 		/*print out runtime*/
 	    long end = System.currentTimeMillis();
 	    System.out.println("runtime: " + (end - start) + "ms");
+	}
+	/*iterate thorugh the dication and find the password*/
+	public static void crack(boolean cracked, String encrypted_password, String salt,
+		ArrayList<String> words, jcrypt jj){
+
+	    int w_index = 0;
+		String word="";
+		/*iterating through dicationary*/
+	    for (w_index = 0; w_index < words.size();w_index++){
+		    word=words.get(w_index);
+			String encryption=jj.crypt(salt, word);	
+			if (encryption.equals(salt + encrypted_password)){
+		        cracked = true;
+				break;
+			}
+		}	
+		results(cracked, word);
 	}
 	public static void results(boolean cracked, String word){
     	

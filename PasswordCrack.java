@@ -5,18 +5,17 @@ import java.util.Arrays;
 import java.lang.StringBuilder;
 public class PasswordCrack{
 
-
 	public static void main(String args[])throws Exception{
 	
 	
 		
 		long start = System.currentTimeMillis();		
-
+		
 		/*get user and dictionary data*/
     	ArrayList<String> words = getWords(args[0]);     
 		ArrayList<ArrayList<String>> users = getUsers(args[1]);
 		jcrypt jj = new jcrypt();
-
+		int number_cracked=0;
 		/*CRACK PASSWORDS*/ 
 		/*iterating through the user list*/
 		for (int i = 0; i < users.size();i++){
@@ -27,24 +26,31 @@ public class PasswordCrack{
 			String encrypted_password = users.get(i).get(1).substring(2); 
 			/*get salt*/
 			String salt = users.get(i).get(1).substring(0,2);
-			/*add first name to list of words*/
-            words.add(users.get(i).get(0));
+
+			/*add first and last name to list of words*/
+            String firstlast_name=users.get(i).get(4);
+            String[] names = firstlast_name.split("[ ]");
+            words.add(names[0]);
+            words.add(names[1]);
 
 			/*for debugging purposes*/
 			System.out.println("attempting to crack: "+encrypted_password +", with salt: " + users.get(i).get(1));
 
 			/*attempt to crack users password*/
-			crack(cracked, encrypted_password, salt, words, jj);
+			number_cracked+=crack(cracked, encrypted_password, salt, words, jj, users);
 			
 		}
 
 		/*print out runtime*/
 	    long end = System.currentTimeMillis();
-	    System.out.println("runtime: " + (end - start) + "ms");
+	    System.out.println("\nruntime: " + (end - start)*1.0/1000 + " seconds");
+	    System.out.println("Total number passwords: " + users.size());
+		System.out.println("Passwords cracked: " + number_cracked);
+		System.out.println("Passwords failed: " +(users.size()- number_cracked)+"\n");
 	}
 	/*iterate thorugh the dication and find the password*/
-	public static void crack(boolean cracked, String encrypted_password, String salt,
-		ArrayList<String> words, jcrypt jj){
+	public static int crack(boolean cracked, String encrypted_password, String salt,
+		ArrayList<String> words, jcrypt jj, ArrayList<ArrayList<String>> users){
 
 	    int w_index = 0;
 		String word="", ans="";
@@ -93,20 +99,48 @@ public class PasswordCrack{
 				cracked = true;
 				break;
 			}
+			/*check if password is word with all uppercase*/
+			if((salt+encrypted_password).equals(jj.crypt(salt, ans=word.toUpperCase()))){
+				cracked = true;
+				break;
+			}
+			/*check if password is word all lowercased*/
+			if((salt+encrypted_password).equals(jj.crypt(salt, ans=word.toLowerCase()))){
+				cracked = true;
+				break;
+			}
+			/*check if password is word captilalized*/
+			if((salt+encrypted_password).equals(jj.crypt(salt, ans=capitalize(word)))){
+				cracked = true;
+				break;
+			}
+			/*check if password is word ncap*/
+			if((salt+encrypted_password).equals(jj.crypt(salt, ans=ncapitalize(word)))){
+				cracked = true;
+				break;
+			}
+			if((ans=toggle(word, encrypted_password, salt, jj))!=null){
+				cracked = true;
+				break;
+			}
 
 
 
 
 			
 		}	
+		
 		results(cracked, ans);
+		return cracked?1:0;
+		
 	}
+
 
 	/*method that prints results of attempt at cracking passwrod*/
 	public static void results(boolean cracked, String word){
     	
 		if (cracked)
-			System.out.println("\033[32mfound password\033[0m: " + word);	
+			System.out.println("\033[32mfound password\033[0m: "+word);	
 	    else
 			System.out.println("\033[31mdidn't crack password\033[0m");
 			
@@ -204,8 +238,10 @@ public class PasswordCrack{
 		return null;
 	}
 	/*creates two toggles and returns results in arrayList*/
-	public static ArrayList<String> toggle(String word){
+	public static String toggle(String word, String encrypted_password, String salt,
+		jcrypt jj){
 		ArrayList<String> results = new ArrayList<String>();
+		String ans="";
 		for (int j = 0; j < 2;j++){
 			StringBuilder build = new StringBuilder();
 			
@@ -226,6 +262,10 @@ public class PasswordCrack{
 			results.add(build.toString());
 
 		}
-		return results;
+		if((salt+encrypted_password).equals(jj.crypt(salt,ans=results.get(0))))
+			return ans;
+		else if((salt+encrypted_password).equals(jj.crypt(salt,ans=results.get(1))))
+			return ans;
+		return null;
 	}
 }

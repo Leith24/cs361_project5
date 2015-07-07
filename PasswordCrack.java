@@ -15,12 +15,49 @@ public class PasswordCrack{
 		/*get user and dictionary data*/
     	ArrayList<String> words = getWords(args[0]);     
 		ArrayList<ArrayList<String>> users = getUsers(args[1]);
+		System.out.println("PRINTING MICHAEL: " + users.get(0));
+		jcrypt jj = new jcrypt();
+		/*iterating through the user list*/
+		for (int i = 0; i < users.size();i++){
+			boolean cracked = false;
 
-		/*need to implement main portion*/
+			System.out.println("\n"+  users.get(i));	
+			/*take off salt values from front*/
+			String encrypted_password = users.get(i).get(1).substring(2); 
+			/*get salt value*/
+			String salt = users.get(i).get(1).substring(0,2);
+			/*add first name to list*/
+            words.add(users.get(i).get(0));
+			System.out.println("name added: " + words.get(words.size() - 1));
+			System.out.println("attempting to crack: "+encrypted_password +", with salt: " + users.get(i).get(1));
+
+			int w_index = 0;
+			String word="";
+			/*iterating through dicationary*/
+		    for (w_index = 0; w_index < words.size();w_index++){
+			    word=words.get(w_index);
+				String encryption=jj.crypt(salt, word);	
+				if (encryption.equals(salt + encrypted_password)){
+			        cracked = true;
+					break;
+				}
+			}	
+			//words.remove(words.size() - 1);
+			results(cracked, word);
+		}
 
 		/*print out runtime*/
 	    long end = System.currentTimeMillis();
 	    System.out.println("runtime: " + (end - start) + "ms");
+	}
+	public static void results(boolean cracked, String word){
+    	
+		if (cracked)
+			System.out.println("\033[32mfound password\033[0m: " + word);	
+	    else
+			System.out.println("\033[31mdidn't crack password\033[0m");
+			
+	
 	}
 
 	/*import and parse user data into double ArrayList*/
@@ -52,7 +89,7 @@ public class PasswordCrack{
 	/*prepend symbol to string*/
 	public static String prepend(String word){
 		StringBuilder build = new StringBuilder();
-		for (int i = 0; i < 256; i++){
+		for (int i = 32; i < 127; i++){
 			build.append((char)i+word);
 			System.out.print(build.toString() + ", ");
 		}
@@ -61,7 +98,7 @@ public class PasswordCrack{
     /*append symbol to string*/
 	public static String append(String word){
 	StringBuilder build = new StringBuilder();
-		for (int i = 0; i < 256; i++){
+		for (int i = 32; i < 127; i++){
 			build.append(word+(char)i);
 			System.out.print(build.toString() + ", ");
 		}

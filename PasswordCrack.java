@@ -29,8 +29,8 @@ public class PasswordCrack{
 			String salt = users.get(i).get(1).substring(0,2);
 			/*add first name to list of words*/
             words.add(users.get(i).get(0));
+
 			/*for debugging purposes*/
-			System.out.println("name added: " + words.get(words.size() - 1));
 			System.out.println("attempting to crack: "+encrypted_password +", with salt: " + users.get(i).get(1));
 
 			/*attempt to crack users password*/
@@ -47,18 +47,62 @@ public class PasswordCrack{
 		ArrayList<String> words, jcrypt jj){
 
 	    int w_index = 0;
-		String word="";
-		/*iterating through dicationary*/
-	    for (w_index = 0; w_index < words.size();w_index++){
+		String word="", ans="";
+		/*iterating through dicationary and find password*/
+	    for (w_index=0; w_index<words.size();w_index++){
 		    word=words.get(w_index);
+		    ans=word;
 			String encryption=jj.crypt(salt, word);	
+			/*check any word unaltered is password*/
 			if (encryption.equals(salt + encrypted_password)){
 		        cracked = true;
 				break;
 			}
+			/*check if password is word prepended with symbol*/
+			if ((ans=prepend(word, encrypted_password, salt, jj))!=null){
+				cracked = true;
+				break;
+			}
+			/*check if password is word appended with symbol*/
+			if ((ans=append(word, encrypted_password, salt, jj))!=null){
+				cracked = true;
+				break;
+			}
+			/*check if password is word with first letter removed*/
+			if((salt+encrypted_password).equals(jj.crypt(salt, ans=remove_First(word)))){
+				cracked = true;
+				break;
+			}
+			/*check if password is word with last letter removed*/
+			if((salt+encrypted_password).equals(jj.crypt(salt, ans=remove_Last(word)))){
+				cracked = true;
+				break;
+			}
+			/*check if password is word reversed*/
+			if((salt+encrypted_password).equals(jj.crypt(salt, ans=reverse(word)))){
+				cracked = true;
+				break;
+			}
+			/*check if password is word duplicated*/
+			if((salt+encrypted_password).equals(jj.crypt(salt, ans=duplicate(word)))){
+				cracked = true;
+				break;
+			}
+			/*check if password is word reflected against itself*/
+			if((ans=reflect(word, encrypted_password, salt, jj))!=null){
+				cracked = true;
+				break;
+			}
+
+
+
+
+			
 		}	
-		results(cracked, word);
+		results(cracked, ans);
 	}
+
+	/*method that prints results of attempt at cracking passwrod*/
 	public static void results(boolean cracked, String word){
     	
 		if (cracked)
@@ -96,20 +140,28 @@ public class PasswordCrack{
 	}
 
 	/*prepend symbol to string*/
-	public static String prepend(String word){
+	public static String prepend(String word, String encrypted_password, String salt,
+		jcrypt jj){
 		StringBuilder build = new StringBuilder();
 		for (int i = 32; i < 127; i++){
 			build.append((char)i+word);
-			System.out.print(build.toString() + ", ");
+			if ((salt+encrypted_password).equals(jj.crypt(salt, build.toString()))){
+				return build.toString();
+			}
+			build = new StringBuilder();
 		}
 		return null;
 	}
     /*append symbol to string*/
-	public static String append(String word){
+	public static String append(String word, String encrypted_password, String salt,
+		jcrypt jj){
 	StringBuilder build = new StringBuilder();
 		for (int i = 32; i < 127; i++){
 			build.append(word+(char)i);
-			System.out.print(build.toString() + ", ");
+			if ((salt+encrypted_password).equals(jj.crypt(salt, build.toString()))){
+				return build.toString();
+			}
+			build = new StringBuilder();
 		}
 		return null;
 		
@@ -141,11 +193,15 @@ public class PasswordCrack{
 		return word.substring(0,1).toLowerCase()+word.substring(1).toUpperCase();
 	}
 	/*create mirror image of string and returns reults in array list*/
-	public static ArrayList<String> reflect(String word){
-		ArrayList<String> results=new ArrayList<String>();
-		results.add(reverse(word)+word);
-		results.add(word+reverse(word));
-		return results;
+	public static String reflect(String word, String encrypted_password, String salt,
+		jcrypt jj){
+		String ans="";
+		if((salt+encrypted_password).equals(jj.crypt(salt,ans=reverse(word)+word)))
+			return ans;
+		if((salt+encrypted_password).equals(jj.crypt(salt,ans=word+reverse(word))))
+			return ans;
+
+		return null;
 	}
 	/*creates two toggles and returns results in arrayList*/
 	public static ArrayList<String> toggle(String word){

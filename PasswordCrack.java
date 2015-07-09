@@ -3,6 +3,7 @@ import java.util.Scanner;
 import java.io.File;
 import java.util.Arrays;
 import java.lang.StringBuilder;
+import java.util.Hashtable;
 public class PasswordCrack{
 
 	public static void main(String args[])throws Exception{
@@ -18,7 +19,7 @@ public class PasswordCrack{
 		int number_cracked=0;
 		/*CRACK PASSWORDS*/ 
 		/*iterating through the user list*/
-		for (int i = 0; i < users.size();i++){
+		for (int i = users.size() - 1; i >=0 ;i--){
 			boolean cracked = false;
 
 			System.out.println("\n"+  users.get(i));	
@@ -37,21 +38,113 @@ public class PasswordCrack{
 			System.out.println("attempting to crack: "+ users.get(i).get(1));
 
 			/*attempt to crack users password*/
+			int old = number_cracked;
 			number_cracked+=crack(cracked, encrypted_password, salt, words, jj, users);
+			if (old != number_cracked)
+				users.remove(i);
 			
 		}
+
+		try_combinations(users, jj, words);
 
 		/*print out runtime*/
 	    long end = System.currentTimeMillis();
 	    System.out.println("\nruntime: " + (end - start)*1.0/1000 + " seconds");
-	    System.out.println("Total number passwords: " + users.size());
+	    System.out.println("Total number passwords: " + 20);
 		System.out.println("Passwords cracked: " + number_cracked);
-		System.out.println("Passwords failed: " +(users.size()- number_cracked)+"\n");
+		System.out.println("Passwords failed: " + (20 - number_cracked)+"\n");
+
+		System.out.println("SIZE: "+users.size());
+		System.out.println("USERS: " + users);
 	}
+
+	public static void try_combinations(ArrayList<ArrayList<String>> users, jcrypt jj, ArrayList<String> words){
+
+		Hashtable<String, Integer> passwords_hash = new Hashtable<String, Integer>();
+		/*insert passwords into hashtable*/
+		for (int i = 0; i < users.size(); i++){
+			passwords_hash.put(users.get(i).get(1), 1);
+		}
+
+		int[] combinations = new int[9];
+		for (int i = 0; i < combinations.length; i++){
+
+			for (int j = 0; j < combinations.length;j++){
+				combinations[i]=1;
+				combinations[j]=1;
+				for (int w_index = 0; w_index<words.size(); w_index++){
+
+					String word = crack_again(combinations, words.get(w_index));
+					
+					combinations[i]=1;
+					combinations[j]=1;
+				}
+
+			}
+		
+		}		
+
+	}
+
+	public static String crack_again(int[] combinations, String word){
+
+		if (combinations[0] == 1){
+			word = remove_First(word);
+			combinations[0]=0;
+			crack_again(combinations, word);
+		} 
+		else if (combinations[1]==1){
+			word = remove_Last(word);
+			combinations[1]=0;
+			crack_again(combinations, word);
+		}
+		else if (combinations[2]==1){
+			word=reverse(word);
+			combinations[2]==0;
+			crack_again(combinations, word);
+		}
+		else if (combinations[3]==1){
+			word=duplicate(word);
+			combinations[3]=0;
+			crack_again(combinations, word);
+		}
+		else if (combinations[4]==1){
+			word=reflect(word);
+			combinations[4]=0;
+			crack_again(combinations, word);
+		}
+		else if (combinations[5]==1){
+			word=word.toUpperCase();
+			combinations[5]=0;
+			crack_again(combinations, word);
+		}
+		else if (combinations[6]==1){
+			word=word.toLowerCase();
+			combinations[6]=0;
+			crack_again(combinations, word);
+		}
+		else if (combinations[7]==1){
+			word=capitalize(word);
+			combinations[7]=0;
+			crack_again(combinations, word);
+		}
+		else if (combinations[8]==1){
+			word=ncapitalize(word);
+			combinations[8]=0;
+			crack_again(combinations, word);
+		} else {
+
+			return word;
+		}
+
+
+
+	}
+	
 	/*iterate thorugh the dication and find the password*/
 	public static int crack(boolean cracked, String encrypted_password, String salt,
 		ArrayList<String> words, jcrypt jj, ArrayList<ArrayList<String>> users){
-
+	
 	    int w_index = 0;
 		String word="", ans="";
 		/*iterating through dicationary and find password*/

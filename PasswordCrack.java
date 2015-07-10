@@ -5,12 +5,14 @@ import java.util.Arrays;
 import java.lang.StringBuilder;
 public class PasswordCrack{
 
+	public static ArrayList<String> crackedWords = new ArrayList<String>();
+	public static ArrayList<String> failed = new ArrayList<String>();
+
 	public static void main(String args[])throws Exception{
 	
 	
 		
 		long start = System.currentTimeMillis();		
-		
 		/*get user and dictionary data*/
     	ArrayList<String> words = getWords(args[0]);     
 		ArrayList<ArrayList<String>> users = getUsers(args[1]);
@@ -43,11 +45,18 @@ public class PasswordCrack{
 
 		/*print out runtime*/
 	    long end = System.currentTimeMillis();
-	    System.out.println("\nruntime: " + (end - start)*1.0/1000 + " seconds");
-	    System.out.println("Total number passwords: " + users.size());
-		System.out.println("Passwords cracked: " + number_cracked);
-		System.out.println("Passwords failed: " +(users.size()- number_cracked)+"\n");
-	}
+	    
+	    //System.out.println("Total number passwords: " + users.size());
+		System.out.println("\nWe can crack " + number_cracked+" cases. \nList of cracked:");
+		for(int i = 0; i<crackedWords.size();i++){
+			System.out.println(crackedWords.get(i));
+		}
+		System.out.println("\nWe can not crack " +(users.size()- number_cracked)+" cases.\nList of uncracked:");
+		for(int i = 0; i<failed.size();i++){
+			System.out.println(failed.get(i));
+		}		
+		System.out.println("\nWe can crack "+ number_cracked+" cases in " + (end - start)*1.0/1000 + " seconds");
+	}	
 	/*iterate thorugh the dication and find the password*/
 	public static int crack(boolean cracked, String encrypted_password, String salt,
 		ArrayList<String> words, jcrypt jj, ArrayList<ArrayList<String>> users){
@@ -139,10 +148,14 @@ public class PasswordCrack{
 	/*method that prints results of attempt at cracking passwrod*/
 	public static void results(boolean cracked, String word){
     	
-		if (cracked)
+		if (cracked){
+			crackedWords.add(word);
 			System.out.println("\033[32mfound password\033[0m: "+word);	
-	    else
+		}
+	    else{
+	    	failed.add(word);
 			System.out.println("\033[31mFAILED\033[0m");
+		}
 			
 	
 	}

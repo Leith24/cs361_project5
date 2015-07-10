@@ -1,14 +1,3 @@
-		System.out.println("\nWe can crack " + number_cracked+" cases. \nList of cracked:");
-		for(int i = 0; i<crackedWords.size();i++){
-			System.out.println(crackedWords.get(i));
-		}
-		System.out.println("\nWe can not crack " +(users.size()- number_cracked)+" cases.\nList of uncracked:");
-		for(int i = 0; i<failed.size();i++){
-			System.out.println(failed.get(i));
-		}		
-		System.out.println("\nWe can crack "+ number_cracked+" cases in " + (end - start)*1.0/1000 + " seconds");
-
-
 UTEID: gdl386; dao384;
 FIRSTNAME: Gavin; Daniel;
 LASTNAME: Leith; Olvera;

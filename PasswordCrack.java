@@ -8,12 +8,12 @@ import java.util.*;
 public class PasswordCrack{
 	public static ArrayList<String> cracked_users = new ArrayList<String>();
 	public static Hashtable<String, Integer> passwords_hash = new Hashtable<String, Integer>();
+
 	public static void main(String args[])throws Exception{
 	
 	
 		
 		long start = System.currentTimeMillis();		
-		
 		/*get user and dictionary data*/
     	ArrayList<String> words = getWords(args[0]);     
 		ArrayList<ArrayList<String>> users = getUsers(args[1]);
@@ -52,6 +52,7 @@ public class PasswordCrack{
 
 		/*print out runtime*/
 	    long end = System.currentTimeMillis();
+
 	    System.out.println("\nWe can crack " + number_cracked+" cases. \nList of cracked:");
 	    for(int i = 0; i<cracked_users.size();i++){
 	        System.out.println(cracked_users.get(i));
@@ -195,7 +196,7 @@ public class PasswordCrack{
 		return word;
 	}
 
-	
+
 	/*iterate thorugh the dication and find the password*/
 	public static int crack(boolean cracked, String encrypted_password, String salt,
 		ArrayList<String> words, jcrypt jj, ArrayList<ArrayList<String>> users){
@@ -286,13 +287,16 @@ public class PasswordCrack{
 
 	/*method that prints results of attempt at cracking passwrod*/
 	public static void results(boolean cracked, String word){
+
     		
 		if (cracked){	
 			cracked_users.add(word);
 			System.out.println("\033[32mfound password\033[0m: "+word);	
 		}
-	    else
+	    else{
+
 			System.out.println("\033[31mFAILED\033[0m");
+		}
 			
 	
 	}

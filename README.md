@@ -16,6 +16,100 @@ We finished the assignment. We did not pass all the passwords however.
 https://www.cs.utexas.edu/~byoung/cs361/passwd1
 
 [Output of test 1]
+attempting to crack: T8jwuve9rQBo.
+FAILED
+
+attempting to crack: !cI6tOT/9D2r6
+found password: Salizar
+
+attempting to crack: 5WW698tSZJE9I
+FAILED
+
+attempting to crack: KelgNcBOZdHmA
+FAILED
+
+attempting to crack: gwjT8yTnSCVQo
+found password: enoggone
+
+attempting to crack: nxsr/UAKmKnvo
+FAILED
+
+attempting to crack: 8joIBJaXJvTd2
+FAILED
+
+attempting to crack: w@EbBlXGLTue6
+found password: THIRTY
+
+attempting to crack: jsQGVbJ.IiEvE
+found password: sATCHEL
+
+attempting to crack: 3dIJJXzELzcRE
+found password: Impact
+
+attempting to crack: 7we09tBSVT76o
+found password: keyskeys
+
+attempting to crack: e4DBHapAtnjGk
+found password: doorrood
+
+attempting to crack: khnVjlJN3Lyh2
+found password: rdoctor
+
+attempting to crack: %xPBzF/TclHvg
+found password: abort6
+
+attempting to crack: {ztmy9azKzZgU
+found password: icious
+
+attempting to crack: feohQuHOnMKGE
+found password: squadro
+
+attempting to crack: <qt0.GlIrXuKs
+found password: eeffoc
+
+attempting to crack: (bUx9LiAcW8As
+found password: amazing
+
+attempting to crack: &i4KZ5wmac566
+FAILED
+
+attempting to crack: atbWfKL4etk4U
+found password: michael
+
+attemping to crack: &i4KZ5wmac566
+found password: liagiba
+
+attemping to crack: 8joIBJaXJvTd2
+found password: teserP
+
+We can crack 16 cases. 
+List of cracked:
+Salizar
+enoggone
+THIRTY
+sATCHEL
+Impact
+keyskeys
+doorrood
+rdoctor
+abort6
+icious
+squadro
+eeffoc
+amazing
+michael
+liagiba
+teserP
+
+We can not crack 4 cases.
+List of uncracked:
+KelgNcBOZdHmA
+5WW698tSZJE9I
+T8jwuve9rQBo.
+nxsr/UAKmKnvo
+
+We can crack 16 cases in 4.912 seconds
+
 
 [Input of test 2]
 https://www.cs.utexas.edu/~byoung/cs361/passwd2

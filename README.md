@@ -114,3 +114,96 @@ We can crack 16 cases in 4.912 seconds
 [Input of test 2]
 https://www.cs.utexas.edu/~byoung/cs361/passwd2
 [Output of test 2]
+attempting to crack: T8U5jQaDVv/o2
+FAILED
+
+attempting to crack: !cSaQELm/EBV.
+FAILED
+
+attempting to crack: 5Wb2Uqxhoyqfg
+FAILED
+
+attempting to crack: KenK1CTDGr/7k
+FAILED
+
+attempting to crack: gw9oXmw1L08RM
+FAILED
+
+attempting to crack: nxr9OOqvZjbGs
+FAILED
+
+attempting to crack: 8jGWbU0xbKz06
+found password: zoossooz
+
+attempting to crack: w@FxBZv.d0y/U
+FAILED
+
+attempting to crack: js5ctN1leUABo
+found password: ellows
+
+attempting to crack: 3d1OgBYfvEtfg
+found password: ^bribed
+
+attempting to crack: 7wKTWsgNJj6ac
+found password: INDIGNITY
+
+attempting to crack: e4EyEMhNzYLJU
+found password: ElmerJ
+
+attempting to crack: kh/1uC5W6nDKc
+found password: dIAMETER
+
+attempting to crack: %xqFrM5RVA6t6
+found password: soozzoos
+
+attempting to crack: {zQOjvJcHMs7w
+found password: enchant$
+
+attempting to crack: fe8PnYhq6WoOQ
+FAILED
+
+attempting to crack: <qf.L9z1/tZkA
+found password: eltneg
+
+attempting to crack: (bt0xiAwCf7nA
+found password: cOnNeLlY
+
+attempting to crack: &ileDTgJtzCRo
+found password: Saxon
+
+attempting to crack: atQhiiJLsT6cs
+found password: tremors
+
+attemping to crack: fe8PnYhq6WoOQ
+found password: Lacque
+
+attemping to crack: gw9oXmw1L08RM
+found password: nosral
+
+We can crack 14 cases. 
+List of cracked:
+zoossooz
+ellows
+^bribed
+INDIGNITY
+ElmerJ
+dIAMETER
+soozzoos
+enchant$
+eltneg
+cOnNeLlY
+Saxon
+tremors
+Lacque
+nosral
+
+We can not crack 6 cases.
+List of uncracked:
+!cSaQELm/EBV.
+5Wb2Uqxhoyqfg
+KenK1CTDGr/7k
+T8U5jQaDVv/o2
+nxr9OOqvZjbGs
+w@FxBZv.d0y/U
+
+We can crack 14 cases in 5.839 seconds

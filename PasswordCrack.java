@@ -3,14 +3,17 @@ import java.util.Scanner;
 import java.io.File;
 import java.util.Arrays;
 import java.lang.StringBuilder;
+import java.util.Hashtable;
+import java.util.*;
 public class PasswordCrack{
+	public static ArrayList<String> cracked_users = new ArrayList<String>();
+	public static Hashtable<String, Integer> passwords_hash = new Hashtable<String, Integer>();
 
 	public static void main(String args[])throws Exception{
 	
 	
 		
 		long start = System.currentTimeMillis();		
-		
 		/*get user and dictionary data*/
     	ArrayList<String> words = getWords(args[0]);     
 		ArrayList<ArrayList<String>> users = getUsers(args[1]);
@@ -18,10 +21,10 @@ public class PasswordCrack{
 		int number_cracked=0;
 		/*CRACK PASSWORDS*/ 
 		/*iterating through the user list*/
-		for (int i = 0; i < users.size();i++){
+		for (int i = users.size() - 1; i >=0 ;i--){
 			boolean cracked = false;
 
-			System.out.println("\n"+  users.get(i));	
+			System.out.println();	
 			/*get password w/o salt*/
 			String encrypted_password = users.get(i).get(1).substring(2); 
 			/*get salt*/
@@ -37,21 +40,167 @@ public class PasswordCrack{
 			System.out.println("attempting to crack: "+ users.get(i).get(1));
 
 			/*attempt to crack users password*/
+			int old = number_cracked;
 			number_cracked+=crack(cracked, encrypted_password, salt, words, jj, users);
+			if (old != number_cracked)
+				users.remove(i);
+
 			
 		}
 
+		number_cracked=try_combinations(users, jj, words, number_cracked);
+
 		/*print out runtime*/
 	    long end = System.currentTimeMillis();
-	    System.out.println("\nruntime: " + (end - start)*1.0/1000 + " seconds");
-	    System.out.println("Total number passwords: " + users.size());
-		System.out.println("Passwords cracked: " + number_cracked);
-		System.out.println("Passwords failed: " +(users.size()- number_cracked)+"\n");
+
+	    System.out.println("\nWe can crack " + number_cracked+" cases. \nList of cracked:");
+	    for(int i = 0; i<cracked_users.size();i++){
+	        System.out.println(cracked_users.get(i));
+	    }
+	    System.out.println("\nWe can not crack " +(20- number_cracked)+" cases.\nList of uncracked:");
+	   
+	    Iterator<Map.Entry<String, Integer>> it = passwords_hash.entrySet().iterator();
+	    while(it.hasNext()){
+	    	Map.Entry<String,Integer> entry = it.next();
+	    	System.out.println(entry.getKey());
+	    }
+	    
+	    System.out.println("\nWe can crack "+ number_cracked+" cases in " + (end - start)*1.0/1000 + " seconds");
+		}
+
+	public static int try_combinations(ArrayList<ArrayList<String>> users, jcrypt jj, ArrayList<String> words, int number_cracked){
+
+		
+		/*insert passwords into hashtable*/
+		for (int i = 0; i < users.size(); i++){
+			passwords_hash.put(users.get(i).get(1), 1);
+		}
+
+		int[] combinations = new int[8];
+		
+			for (int i = 0; i < combinations.length ; i++){
+
+				for (int j = 0; j < combinations.length ;j++){
+					combinations[i]=1;
+				
+					combinations[j]=1;
+
+					for(int prefix = 0; prefix < users.size(); prefix++){
+						String salt_temp = users.get(prefix).get(1).substring(0,2);
+						for (int w_index = 0; w_index<words.size(); w_index++){
+							String word = crack_again(combinations, words.get(w_index), i , j);
+							
+							String test_enc=jj.crypt(salt_temp, word);
+							if (passwords_hash.containsKey(test_enc)){
+								passwords_hash.remove(test_enc);
+								cracked_users.add(word);
+								System.out.println("\nattemping to crack: " + users.get(prefix).get(1));
+								System.out.println("\033[32mfound password\033[0m: "+word);
+								number_cracked++;
+							}
+
+							//System.out.println(word);
+
+							combinations[i]=1;
+							combinations[j]=1;
+					
+							
+						}
+					}
+
+				}
+
+			
+			}	
+		
+		return number_cracked;	
+
 	}
+
+	public static String crack_again(int[] combinations, String word, int i , int j){
+
+		if (combinations[0] == 1){
+			word = remove_First(word);
+			combinations[0]=0;
+			word=crack_again(combinations, word,i,j);
+			
+		} 
+		else if (combinations[1]==1){
+			word = remove_Last(word);
+			combinations[1]=0;
+			word=crack_again(combinations, word,i,j);
+		}
+		else if (combinations[2]==1){
+			if(combinations[0]==1){
+				word=remove_First(word);
+				combinations[0]=0;
+			}
+			else if(combinations[1]==1){
+				word=remove_Last(word);
+				combinations[1]=0;
+			}
+			else if(combinations[3]==1){
+				word=duplicate(word);
+				combinations[3]=0;
+			}
+			else if(combinations[4]==1){
+				combinations[4]=0;
+				word=word.toUpperCase();
+			}
+			else if(combinations[5]==1){
+				combinations[5]=0;
+				word=word.toLowerCase();
+			}
+			else if(combinations[6]==1){
+				word=capitalize(word);
+				combinations[6]=0;
+			}
+			else if(combinations[7]==1){
+				word=ncapitalize(word);
+				combinations[7]=0;
+			}
+			word=reverse(word);
+			combinations[2]=0;
+		    word=crack_again(combinations, word,i,j);
+		}
+
+
+		else if (combinations[3]==1){
+			word=duplicate(word);
+			combinations[3]=0;
+			word=crack_again(combinations, word,i,j);
+		}
+		else if (combinations[4]==1){
+			word=word.toUpperCase();
+			combinations[4]=0;
+			word=crack_again(combinations, word,i,j);
+		}
+		else if (combinations[5]==1){
+			word=word.toLowerCase();
+			combinations[5]=0;
+			word=crack_again(combinations, word,i,j);
+		}
+		else if (combinations[6]==1){
+
+			word=capitalize(word);
+			combinations[6]=0;
+			assert (!word.equals("Preset")) : "found it";
+			word=crack_again(combinations, word,i,j);
+
+		}
+		else if (combinations[7]==1){
+			word=ncapitalize(word);
+			combinations[7]=0;
+			word=crack_again(combinations, word,i,j);
+		}
+		return word;
+	}
+
+
 	/*iterate thorugh the dication and find the password*/
 	public static int crack(boolean cracked, String encrypted_password, String salt,
 		ArrayList<String> words, jcrypt jj, ArrayList<ArrayList<String>> users){
-
+	
 	    int w_index = 0;
 		String word="", ans="";
 		/*iterating through dicationary and find password*/
@@ -138,11 +287,16 @@ public class PasswordCrack{
 
 	/*method that prints results of attempt at cracking passwrod*/
 	public static void results(boolean cracked, String word){
-    	
-		if (cracked)
+
+    		
+		if (cracked){	
+			cracked_users.add(word);
 			System.out.println("\033[32mfound password\033[0m: "+word);	
-	    else
+		}
+	    else{
+
 			System.out.println("\033[31mFAILED\033[0m");
+		}
 			
 	
 	}
@@ -210,6 +364,7 @@ public class PasswordCrack{
 	}
 	/*reverse a string*/
 	public static String reverse(String word){
+
 		return new StringBuilder(word).reverse().toString();
 	}
 
@@ -219,12 +374,17 @@ public class PasswordCrack{
 	}
 	/*capitilze a string*/
 	public static String capitalize(String word){
-
+		if(word.length()>1)
 		return word.substring(0,1).toUpperCase() + word.substring(1).toLowerCase();
+		else
+		return word.toUpperCase();
 	}
 	/*inverse of capitalize*/
 	public static String ncapitalize(String word){
-		return word.substring(0,1).toLowerCase()+word.substring(1).toUpperCase();
+		if(word.length()>1)
+			return word.substring(0,1).toLowerCase()+word.substring(1).toUpperCase();
+		else
+			return word.toLowerCase();
 	}
 	/*create mirror image of string and returns reults in array list*/
 	public static String reflect(String word, String encrypted_password, String salt,
